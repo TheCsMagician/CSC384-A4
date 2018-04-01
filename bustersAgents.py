@@ -163,4 +163,23 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        min_dist = 9999
+        closest_ghost = None
+        for i in livingGhostPositionDistributions:
+            high_prob = i.argMax()
+            dist = self.distancer.getDistance(pacmanPosition, high_prob)
+            if dist < min_dist:
+                min_dist = dist
+                closest_ghost = high_prob
+        action_take = None
+        min_dist = 9999
+        for i in legal:
+            succ = Actions.getSuccessor(pacmanPosition, i)
+            dist = self.distancer.getDistance(succ, closest_ghost)
+            if dist < min_dist:
+                min_dist = dist
+                action_take = i
+        return action_take
+
+        
