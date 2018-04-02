@@ -190,8 +190,9 @@ class ExactInference(InferenceModule):
 
         allPossible = util.Counter()
         if noisyDistance == None:
-            allPossible = util.Counter()
             allPossible[self.getJailPosition()] = 1.0
+        
+        
         for p in self.legalPositions:
             trueDistance = util.manhattanDistance(p, pacmanPosition)
             if emissionModel[trueDistance] > 0:
@@ -201,6 +202,8 @@ class ExactInference(InferenceModule):
 
         allPossible.normalize()
         self.beliefs = allPossible
+        
+        
 
     def elapseTime(self, gameState):
         """Update self.beliefs in response to a time step passing from the
@@ -291,6 +294,15 @@ class ExactInference(InferenceModule):
     def getBeliefDistribution(self):
         return self.beliefs
 
+class Particle(object):
+    
+    def __init__(self, loc):
+        self._loc = loc
+        
+    def get_location(self):
+        return self._loc
+        
+        
 class ParticleFilter(InferenceModule):
     """
     A particle filter for approximately tracking a single ghost.
@@ -321,6 +333,23 @@ class ParticleFilter(InferenceModule):
         weight with each position) is incorrect and may produce errors.
         """
         "*** YOUR CODE HERE ***"
+        
+        self.particles = []
+        num_par_needed = self.numParticles//len(self.legalPositions)
+        
+        for pos in range(len(self.legalPositions)):
+            for i in range(num_par_needed):
+                particle = Particle(self.legalPositions[pos])
+                self.particles.append(particle)
+        
+        
+        remainder = self.numParticles%len(self.legalPositions)
+        for i in range(remainder):
+            particle = Particle(self.legalPositions[i])
+            self.particles.append(particle)
+        
+        
+        
         "*** END YOUR CODE HERE ***"
 
 
