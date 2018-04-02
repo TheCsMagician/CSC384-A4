@@ -293,22 +293,7 @@ class ExactInference(InferenceModule):
 
     def getBeliefDistribution(self):
         return self.beliefs
-'''
-class Particle(object):
-    
-    def __init__(self, loc):
-        self._loc = loc
-        
-    def get_location(self):
-        return self._loc
-    
-    def set_location(self, loc):
-        self._loc = loc
-        return 1
-    
-    def __repr__(self):
-        return str(self._loc)
-'''
+
 
      
 class ParticleFilter(InferenceModule):
@@ -446,7 +431,25 @@ class ParticleFilter(InferenceModule):
         a belief distribution.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        allPossible = util.Counter()
+        beleifs = self.getBeliefDistribution()
+        
+        for oldPos in self.legalPositions:
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
+            for newPos, prob in newPosDist.items():
+                allPossible[newPos] += prob*beleifs[oldPos]
+                
+        
+        if allPossible.totalCount() == 0:
+            self.initializeUniformly(gameState)
+            
+        else:
+            items = sorted(allPossible.items())
+            allPossible = [i[1] for i in items]
+            values = [i[0] for i in items]
+            self.particles = util.nSample(allPossible, values, self.numParticles)
+            
+            
         "*** END YOUR CODE HERE ***"
 
 
