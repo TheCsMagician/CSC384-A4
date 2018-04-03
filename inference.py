@@ -554,6 +554,7 @@ class JointParticleFilter:
         poss_positions = list(itertools.product(self.legalPositions, repeat = self.numGhosts))
         random.shuffle(poss_positions)
         
+        '''
         self.particles = []
         num_par_needed = self.numParticles//len(self.legalPositions)
         
@@ -566,7 +567,19 @@ class JointParticleFilter:
         for i in range(remainder):
             particle = poss_positions[i]
             self.particles.append(particle)
-        
+        '''
+
+        self.particles = []
+        depth = 0
+        for count in range(self.numParticles):
+            for position in poss_positions:
+                if depth < self.numParticles:
+                    self.particles.append(position)
+                    depth = depth + 1
+                else:
+                    break
+                if depth > self.numParticles:
+                    break
         "*** END YOUR CODE HERE ***"
 
 
@@ -799,4 +812,5 @@ def setGhostPositions(gameState, ghostPositions):
         conf = game.Configuration(pos, game.Directions.STOP)
         gameState.data.agentStates[index + 1] = game.AgentState(conf, False)
     return gameState
+
 
